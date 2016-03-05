@@ -1,0 +1,9 @@
+{
+  "statements" : [ 
+    {
+      "statement" : "%QUERY%",
+      "parameters" : %PARAMS%,
+      "resultDataContents" : [ "row", "graph" ]
+    } 
+  ]
+}

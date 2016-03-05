@@ -1,0 +1,27 @@
+@CHARSET "UTF-8";
+#search-input {
+	display: inline;
+	width: 50%;	
+}
+
+.button {
+	background-color: #BDBDBD;
+	display: inline;
+	cursor: pointer;
+}
+
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.link {
+  stroke: #999;
+  stroke-opacity: .6;
+}
+
+#doc-body {
+	width: 1000px;
+	height: 400px;
+	display: block;
+}

@@ -1,0 +1,73 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<bean id="jettyServer" class="org.eclipse.jetty.server.Server"
+		init-method="start" destroy-method="stop">
+		<constructor-arg index="0" ref="jettyServerThreadPool" />
+		<property name="connectors">
+			<list>
+				<ref bean="jettyServerChannelConnector" />
+			</list>
+		</property>
+		<property name="handler">
+			<bean id="handlers" class="org.eclipse.jetty.server.handler.HandlerList">
+				<property name="handlers">
+					<list>
+						<ref bean="jettyContextHandler" />
+					</list>
+				</property>
+			</bean>
+		</property>
+
+	</bean>
+
+	<bean id="jettyContextHandler" class="kyiv.rvysh.vkfriends.webhandlers.SpringHandler">
+		<property name="resourceBase" value="." />
+		<property name="contextPath" value="/" />
+		<property name="servletHandler">
+			<bean class="org.eclipse.jetty.servlet.ServletHandler">
+				<property name="startWithUnavailable" value="false" />
+				<property name="servlets">
+					<list>
+						<bean class="org.eclipse.jetty.servlet.ServletHolder">
+							<property name="name" value="DispatcherServlet" />
+							<property name="servlet">
+								<bean class="org.springframework.web.servlet.DispatcherServlet" />
+							</property>
+							<property name="initParameters">
+								<map>
+									<entry key="contextConfigLocation" value="classpath:spring/jetty-ws.xml" />
+								</map>
+							</property>
+						</bean>
+					</list>
+				</property>
+				<property name="servletMappings">
+					<list>
+						<bean class="org.eclipse.jetty.servlet.ServletMapping">
+							<property name="pathSpecs" value="/*" />
+							<property name="servletName" value="DispatcherServlet" />
+						</bean>
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="jettyServerThreadPool" class="org.eclipse.jetty.util.thread.QueuedThreadPool">
+		<property name="minThreads" value="2" />
+		<property name="maxThreads" value="10" />
+		<property name="name" value="jetty-thread" />
+		<property name="idleTimeout" value="30000" />
+	</bean>
+
+	<bean id="jettyServerChannelConnector" class="org.eclipse.jetty.server.ServerConnector">
+		<constructor-arg index="0" ref="jettyServer" />
+		<property name="port" value="${jetty.port}" />
+		<property name="acceptQueueSize" value="64" />
+		<property name="idleTimeout" value="30000" />
+	</bean>
+</beans>

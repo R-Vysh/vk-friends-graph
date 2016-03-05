@@ -1,0 +1,59 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<tx:annotation-driven />
+	<context:component-scan base-package="kyiv.rvysh.vkfriends.dao" />
+
+	<bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
+		<property name="driverClassName" value="org.neo4j.jdbc.Driver" />
+		<property name="url" value="${neo4j.jdbc.url}:${neo4j.port}" />
+		<property name="username" value="${neo4j.user}" />
+		<property name="password" value="${neo4j.password}" />
+
+		<property name="initialSize" value="10" />
+		<property name="maxActive" value="32" />
+		<property name="maxIdle" value="32" />
+		<property name="minIdle" value="0" />
+	</bean>
+
+	<bean id="jdbcTemplate" class="kyiv.rvysh.vkfriends.jdbc.CustomJdbcTemplate">
+		<constructor-arg index="0" ref="dataSource" />
+	</bean>
+
+	<bean id="queryExecutorJdbc" class="kyiv.rvysh.vkfriends.jdbc.QueryExecutorJdbc" lazy-init="true">
+		<constructor-arg index="0" ref="jdbcTemplate" />
+	</bean>
+
+	<bean id="embeddedDbFactory" class="org.neo4j.graphdb.factory.GraphDatabaseFactory" />
+
+	<bean id="embeddedDb" factory-bean="embeddedDbFactory"
+		factory-method="newEmbeddedDatabase">
+		<constructor-arg>
+			<bean class="java.io.File">
+				<constructor-arg index="0" value="${neo4j.embedded.path}" />
+			</bean>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="queryExecutorEmbedded" class="kyiv.rvysh.vkfriends.jdbc.QueryExecutorEmbedded" lazy-init="true" >
+		<constructor-arg index="0" ref="embeddedDb" />
+	</bean>
+
+	<bean id="jerseyClient" class="javax.ws.rs.client.ClientBuilder" factory-method="newClient" />
+	
+	<bean id="queryExecutorRest" class="kyiv.rvysh.vkfriends.jdbc.QueryExecutorRest" lazy-init="true" >
+		<constructor-arg index="0" ref="jerseyClient" />
+		<property name="hostUrl" value="${neo4j.url}:${neo4j.port}" />
+		<property name="auth" value="${neo4j.rest.auth}"></property>
+	</bean>
+	
+	<bean id="personDao" class="kyiv.rvysh.vkfriends.dao.PersonDao">
+		<constructor-arg index="0" ref="queryExecutorRest" />
+	</bean>
+
+</beans>

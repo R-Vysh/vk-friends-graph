@@ -1,0 +1,53 @@
+{
+	"response" : [{
+			"uid" : 4204907,
+			"first_name" : "Евгений",
+			"last_name" : "Сабанин",
+			"sex" : 2,
+			"nickname" : "",
+			"domain" : "esabanin",
+			"bdate" : "6.1.1994",
+			"city" : 761,
+			"country" : 2,
+			"photo_50" : "http:\/\/cs627219.vk.me\/v627219907\/11b26\/v9xlkRG57NM.jpg",
+			"photo_100" : "http:\/\/cs627219.vk.me\/v627219907\/11b25\/GN_Qk7JQOVw.jpg",
+			"photo_200_orig" : "http:\/\/cs627219.vk.me\/v627219907\/11b22\/N7ZRoKB2fFA.jpg",
+			"has_mobile" : 1,
+			"online" : 0,
+			"can_post" : 0,
+			"can_see_all_posts" : 0,
+			"can_write_private_message" : 0,
+			"status" : "",
+			"last_seen" : {
+				"time" : 1457180532,
+				"platform" : 7
+			},
+			"hidden" : 1,
+			"user_id" : 4204907
+		}, {
+			"uid" : 12888818,
+			"first_name" : "Сергей",
+			"last_name" : "Мессарош",
+			"sex" : 2,
+			"nickname" : "",
+			"domain" : "id12888818",
+			"bdate" : "24.5.1994",
+			"city" : 314,
+			"country" : 2,
+			"photo_50" : "http:\/\/cs625323.vk.me\/v625323818\/2e807\/lEC8favCNaI.jpg",
+			"photo_100" : "http:\/\/cs625323.vk.me\/v625323818\/2e806\/btfAwaEiWYo.jpg",
+			"photo_200_orig" : "http:\/\/cs625323.vk.me\/v625323818\/2e803\/paVrPmBiwTc.jpg",
+			"has_mobile" : 1,
+			"online" : 0,
+			"can_post" : 0,
+			"can_see_all_posts" : 0,
+			"can_write_private_message" : 1,
+			"status" : "",
+			"last_seen" : {
+				"time" : 1457180487,
+				"platform" : 4
+			},
+			"user_id" : 12888818
+		}
+	]
+}
