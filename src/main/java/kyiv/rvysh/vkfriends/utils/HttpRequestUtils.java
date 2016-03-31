@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import kyiv.rvysh.vkfriends.App;
 
+// TODO Replace with Jersey in VkService
 public class HttpRequestUtils {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(App.class);

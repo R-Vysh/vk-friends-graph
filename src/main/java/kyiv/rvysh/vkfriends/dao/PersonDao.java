@@ -27,18 +27,18 @@ public class PersonDao {
 	public void insertPerson(PersonInfo person) {
 		LOGGER.info("Saving info for {}", person.uid);
 		Map<String, Object> params = new HashMap<>();
-		params.put("userid", person.uid);
+		params.put("user_id", person.uid);
 		params.put("person", person);
-		queryExecutor.update("MERGE (me:Person { uid: {userid}}) SET me += {person}", params);
+		queryExecutor.update("MERGE (me:Person { uid: {user_id}}) SET me += {person}", params);
 	}
 	
 	public void insertFriendship(int userId, List<PersonInfo> friends) {
 		LOGGER.info("Saving friends for {}", userId);
 		Map<String, Object> params = new HashMap<>();
 		params.put("friends", friends);
-		params.put("userid", userId);
+		params.put("user_id", userId);
 		// unlink friends
-		queryExecutor.update("MATCH (:Person { uid: {userid} })-[r:FRIEND]-() DELETE r", params);
+		queryExecutor.update("MATCH (:Person { uid: {user_id} })-[r:FRIEND]-() DELETE r", params);
 		// save friends
 		queryExecutor.update(SAVE_FRIENDSHIP, params);
 	}

@@ -1,4 +1,4 @@
-package kyiv.rvysh.vkfriends.domain;
+package kyiv.rvysh.vkfriends.utils;
 
 public class Pair<T1,T2> {
 	private T1 first;

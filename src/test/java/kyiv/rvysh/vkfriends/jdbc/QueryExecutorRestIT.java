@@ -17,7 +17,7 @@ import kyiv.rvysh.vkfriends.domain.PersonInfo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/spring/test-properties.xml", "classpath:/spring/dao.xml" })
-public class QueryExecutorRestTest {
+public class QueryExecutorRestIT {
 	@Autowired
 	@Qualifier("queryExecutorRest")
 	QueryExecutor executor;

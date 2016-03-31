@@ -1,1 +1,0 @@
-MATCH (:Person { uid: {userid} })-[r:FRIEND]->() DELETE r

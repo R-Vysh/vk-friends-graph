@@ -4,21 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kyiv.rvysh.vkfriends.dao.PersonDao;
-import kyiv.rvysh.vkfriends.domain.Pair;
 import kyiv.rvysh.vkfriends.domain.PersonInfo;
 import kyiv.rvysh.vkfriends.domain.graph.Neo4jGraph;
+import kyiv.rvysh.vkfriends.utils.Pair;
 
 public class FriendsService {
 	private VkService vkService;
 	private PersonDao personDao;
-
-	private List<PersonInfo> listFriends(int userId, boolean loadInfo) {
-		return vkService.listFriends(userId, loadInfo);
-	}
-
-	private PersonInfo loadInfo(int userId, boolean loadInfo) {
-		return vkService.userInfo(userId, loadInfo);
-	}
 
 	public void upsertFriends(int userId, boolean loadInfo) {
 		upsertFriends(userId, 1, loadInfo);
@@ -59,6 +51,14 @@ public class FriendsService {
 
 	public Neo4jGraph<PersonInfo> findFriendsGraph(int userId, int depth) {
 		return personDao.findFriendsGraph(userId, depth);
+	}
+	
+	private List<PersonInfo> listFriends(int userId, boolean loadInfo) {
+		return vkService.listFriends(userId, loadInfo);
+	}
+
+	private PersonInfo loadInfo(int userId, boolean loadInfo) {
+		return vkService.userInfo(userId, loadInfo);
 	}
 	
 	public void setVkService(VkService vkService) {

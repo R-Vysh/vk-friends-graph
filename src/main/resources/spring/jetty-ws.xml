@@ -13,9 +13,6 @@
 	<mvc:resources mapping="/favicon.ico" location="classpath:/staticResources/images/favicon.ico" />
 
 	<!-- UI services -->
-	<bean class="kyiv.rvysh.vkfriends.webservices.VkWS">
-		<property name="service" ref="vkService" />
-	</bean>
 	<bean class="kyiv.rvysh.vkfriends.webservices.FriendsWS">
 		<property name="service" ref="friendsService" />
 	</bean>
