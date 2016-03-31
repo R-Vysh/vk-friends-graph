@@ -6,6 +6,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 //TODO Exception handling
 //TODO Insert with info, w\o info
+//TODO graph UI
 public class App {
 	private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
 

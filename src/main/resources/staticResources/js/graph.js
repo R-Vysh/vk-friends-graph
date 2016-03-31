@@ -9,105 +9,100 @@ function all() {
 	  function ajaxFriends() {
 		return $.ajax({
 		  type : "GET",
-		  url : "/vk/list-friends/" + userId,
-		  timeout : 5000,
+		  url : "/friends/get-graph/" + userId,
+		  timeout : 30000,
 		  headers : {
 		    "Accept" : "application/json; charset=utf-8",
-			"Content-Type" : "html/text; charset=utf-8"
+			"Content-Type" : "application/json; charset=utf-8"
 		  }
 		});
 	  }
 
-	  function ajaxUser() {
-		return $.ajax({
-		  type : "GET",
-		  url : "/vk/info/" + userId,
-		  timeout : 5000,
-		  headers : {
-			"Accept" : "application/json; charset=utf-8",
-			"Content-Type" : "html/text; charset=utf-8"
-		  }
-		});
-	  }
-
-	  function loadPictures(listOfPeople, svg) {
-        var defs = svg.append('svg:defs');
-		for(var i = 0; i < listOfPeople.length; i++) {
-	      defs.append("svg:pattern")
-			.attr("id", "avatar" + listOfPeople[i].uid)
-			.attr("width", 50)
-			.attr("height", 50)
-			.attr("patternUnits", "userSpaceOnUse")
-			.append("svg:image")
-			.attr("xlink:href", listOfPeople[i].photo_50)
-			.attr("width", 50)
-			.attr("height", 50)
-			.attr("x", 0)
-			.attr("y", 0);  
-		}
-	  }
-	  
-	  $.when(ajaxUser(), ajaxFriends()).done(
-		function(a1, a2) {
-		  user = a1[0];
-		  friends = a2[0];
-		  var width = window.innerWidth - 20;
-		  var height = window.innerHeight - 80;
-		  var color = d3.scale.category20();
-		  var force = d3.layout.force().charge(-500).linkStrength(0.05).linkDistance(200).size([ width, height ]);
-		  var svg = d3.select("body").append("svg").attr("width", width).attr("height", height);
-		  friends.unshift(user);
-		  loadPictures(friends, svg);
-		  var dataToDraw = {};
-		  dataToDraw.nodes = friends;
-		  dataToDraw.links = [];
-		  for (var i = 1; i < friends.length; i++) {
-			var link = {
-			  source: 0,
-			  target: i,
-			  value: 4
-			};
-		    dataToDraw.links.push(link);
-		  }
-		  force.nodes(dataToDraw.nodes).links(dataToDraw.links).start();
-          var link = svg.selectAll(".link")
-          	.data(dataToDraw.links).enter().append("line").attr("class", "link")
-          	.style("stroke-width", function(d) {
-			  return Math.sqrt(d.value);
-			});
-		  var node = svg.selectAll(".node")
-		  	.data(dataToDraw.nodes)
-		  	.enter()
-		  	.append("circle")
-		  	.attr("class", "node")
-		  	.attr("r", 25)
-		  	.style("fill", "#fff")
-		  	.style("fill", function(d) {
-		  	  return "url(#avatar" + d.uid + ")";
-		  	});
-          node.append("title").text(function(d) {
-        	return d.first_name + " " + d.last_name;
-		  });
-          
-          force.on("tick", function() {
-			link.attr("x1", function(d) {
-			  return d.source.x;
-			}).attr("y1", function(d) {
-			  return d.source.y;
-			}).attr("x2", function(d) {
-			  return d.target.x;
-			}).attr("y2", function(d) {
-			  return d.target.y;
-			});
-			node.attr("cx", function(d) {
-			  return d.x;
-			}).attr("cy", function(d) {
-			  return d.y;
-			});
-		  });
+	  $.when(ajaxFriends()).done(
+		function(response) {
+			var cytoData = [];
+			for (var i = 0; i < response.nodes.length; i++) {
+			  var node = {};
+			  node.data = response.nodes[i].properties;
+			  node.data.id = response.nodes[i].id;
+			  node.group = 'nodes';
+			  cytoData.push(node);
+			}
+			for (var i = 0; i < response.relationships.length; i++) {
+			  var edge = {};
+			  edge.data = response.relationships[i].properties;
+			  edge.data.id = response.relationships[i].id;
+			  edge.data.source = response.relationships[i].startNode;
+			  edge.data.target = response.relationships[i].endNode;
+			  edge.group = 'edges';
+			  cytoData.push(edge);
+			}
+			var cy = cytoscape({
+			  container: $('#cy'),
+			  elements: cytoData,
+			  style: [
+			    {
+			      selector: 'node',
+			      style: {
+			        'background-color': '#666'
+			      }
+			    },
+			    {
+			      selector: 'edge',
+			      style: {
+			        'width': 1,
+			        'line-color': '#ccc',
+			        'target-arrow-color': '#ccc',
+			        'target-arrow-shape': 'none'
+			      }
+			    }
+			  ]
+		    });
+			var layoutParams = getLayout('coseBilkent', null);
+			var layout = cy.makeLayout(layoutParams);
+			layout.run();
 		});
     });
-
+  
+    function getLayout(name, opts) {
+      var defaultParams = {
+    	cola: {
+    	  name: 'cola',
+    	  nodeSpacing: 5,
+    	  edgeLengthVal: 45,
+    	  animate: true,
+    	  randomize: false,
+    	  maxSimulationTime: 1500,
+    	  randomize: false
+//    	  edgeLength: function(e) { return edgeLengthVal/e.data('weight'); }
+    	},
+    	random: {
+    	  name: 'random'
+    	},
+    	spread: {
+    	  name: 'spread',
+    	  animate: true,
+    	  fit: true, // Reset viewport to fit default simulationBounds
+    	  minDist: 10, // Minimum distance between nodes
+    	  padding: 10, // Padding
+    	  expandingFactor: -1.0, 
+    	  maxFruchtermanReingoldIterations: 50, // Maximum number of initial force-directed iterations
+    	  maxExpandIterations: 4, // Maximum number of expanding iterations
+    	  boundingBox: undefined, // Constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+    	  randomize: true // uses random initial node positions on true
+    	},
+    	coseBilkent: {
+      	  name: 'cose-bilkent'
+      	}
+      };
+      var params = defaultParams[name];
+	  for (var i in opts) {
+	    params[i] = opts[i];
+	  }
+	  return params;
+	};
+	
+  
 	$(document).keypress(function(e) {
 		if (e.which == 13) {
 			$('#graph-button').click();

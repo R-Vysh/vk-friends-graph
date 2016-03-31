@@ -10,18 +10,8 @@
 	cursor: pointer;
 }
 
-.node {
-  stroke: #fff;
-  stroke-width: 1.5px;
-}
-
-.link {
-  stroke: #999;
-  stroke-opacity: .6;
-}
-
-#doc-body {
-	width: 1000px;
-	height: 400px;
-	display: block;
+#cy {
+  width: 1900px;
+  height: 800px;
+  display: block;
 }

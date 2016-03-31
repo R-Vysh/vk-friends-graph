@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="js/libs/alchemy.min.js"></script>
-<script src="js/libs/d3.min.js"></script>
-<script src="js/libs/jquery.js"></script>
-<script src="js/graph.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/main.css">
 
-<meta charset="utf-8">
-<link rel="stylesheet" type="text/css" href="css/main.css">
-<link rel="stylesheet" type="text/css" href="css/libs/alchemy.min.css">
-
-<title>Friends Graph</title>
+	<script src="js/libs/jquery.js"></script>
+	<script src="js/libs/cytoscape.min.js"></script>
+	<script src="js/libs/cola.min.js"></script>
+	<script src="js/libs/cytoscape-cola.js"></script>
+    <script src="js/libs/cytoscape-spread.js"></script>
+    <script src="js/libs/cytoscape-cose-bilkent.js"></script>
+    
+	<script src="js/graph.js"></script>
+	<meta charset="utf-8">
+	
+	<title>Friends Graph</title>
 </head>
+
 <body>
 	<div>
 		<input type="text" id="user-id-input"></input>
 		<div id="graph-button" class="button">Build graph</div>
+	</div>
+	<div id="cy">
 	</div>
 </body>
 </html>
