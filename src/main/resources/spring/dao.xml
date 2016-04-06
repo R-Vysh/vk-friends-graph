@@ -29,7 +29,7 @@
 		<constructor-arg index="0" ref="jdbcTemplate" />
 	</bean>
 
-	<bean id="embeddedDbFactory" class="org.neo4j.graphdb.factory.GraphDatabaseFactory" />
+	<!--  <bean id="embeddedDbFactory" class="org.neo4j.graphdb.factory.GraphDatabaseFactory" />
 
 	<bean id="embeddedDb" factory-bean="embeddedDbFactory"
 		factory-method="newEmbeddedDatabase">
@@ -42,7 +42,7 @@
 	
 	<bean id="queryExecutorEmbedded" class="kyiv.rvysh.vkfriends.jdbc.QueryExecutorEmbedded" lazy-init="true" >
 		<constructor-arg index="0" ref="embeddedDb" />
-	</bean>
+	</bean>  -->
 
 	<bean id="jerseyClient" class="javax.ws.rs.client.ClientBuilder" factory-method="newClient" />
 	

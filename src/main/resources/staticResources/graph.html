@@ -2,13 +2,16 @@
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link rel="stylesheet" type="text/css" href="css/libs/jquery.qtip.min.css">
 
 	<script src="js/libs/jquery.js"></script>
+	<script src="js/libs/jquery.qtip.min.js"></script>
 	<script src="js/libs/cytoscape.min.js"></script>
 	<script src="js/libs/cola.min.js"></script>
 	<script src="js/libs/cytoscape-cola.js"></script>
     <script src="js/libs/cytoscape-spread.js"></script>
     <script src="js/libs/cytoscape-cose-bilkent.js"></script>
+    <script src="js/libs/cytoscape-qtip.js"></script>
     
 	<script src="js/graph.js"></script>
 	<meta charset="utf-8">
@@ -18,7 +21,7 @@
 
 <body>
 	<div>
-		<input type="text" id="user-id-input"></input>
+		<input type="text" id="user-id-input" value="17428494"></input>
 		<div id="graph-button" class="button">Build graph</div>
 	</div>
 	<div id="cy">

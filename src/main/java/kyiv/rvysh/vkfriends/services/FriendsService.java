@@ -53,6 +53,10 @@ public class FriendsService {
 		return personDao.findFriendsGraph(userId, depth);
 	}
 	
+	public List<PersonInfo> findClosestPeople(int userId, int size) {
+		return personDao.findClosestPeople(userId, size);
+	}
+	
 	private List<PersonInfo> listFriends(int userId, boolean loadInfo) {
 		return vkService.listFriends(userId, loadInfo);
 	}

@@ -17,6 +17,7 @@ public class PersonDao {
 	private static String SAVE_FRIENDSHIP = ResourceUtils.classpathResourceAsString("sql/save-friends.sql");
 	private static String LOAD_FRIENDSHIP = ResourceUtils.classpathResourceAsString("sql/find-friends.sql");
 	private static String LOAD_FRIENDSHIP_GRAPH = ResourceUtils.classpathResourceAsString("sql/find-friends-graph.sql");
+	private static String LOAD_CLOSEST_PEOPLE = ResourceUtils.classpathResourceAsString("sql/find-closest-people.sql");
 
 	private QueryExecutor queryExecutor;
 
@@ -59,5 +60,15 @@ public class PersonDao {
 		// Hack because path length can not be parametrized
 		String query = LOAD_FRIENDSHIP_GRAPH.replaceAll("%DEPTH%", depth + "");
 		return queryExecutor.queryForGraph(query, params, PersonInfo.class);
+	}
+
+	public List<PersonInfo> findClosestPeople(int userId, int size) {
+		LOGGER.info("Querying closest people for {}", userId);
+		Map<String, Object> params = new HashMap<>();
+		params.put("user_id", userId);
+		params.put("size", size);
+		// Hack because path length can not be parametrized
+		String query = LOAD_CLOSEST_PEOPLE; //.replaceAll("%DEPTH%", depth + "");
+		return queryExecutor.queryForList(query, params, PersonInfo.class);
 	}
 }

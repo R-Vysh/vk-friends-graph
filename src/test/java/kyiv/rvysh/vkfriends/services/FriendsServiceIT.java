@@ -2,6 +2,7 @@ package kyiv.rvysh.vkfriends.services;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class FriendsServiceIT {
 	FriendsService service;
 
 	@Test
+	@Ignore
 	public void testInsertFriends() {
 		service.upsertFriends(17428494, 1, true);
 	}
@@ -30,9 +32,21 @@ public class FriendsServiceIT {
 	}
 	
 	@Test
+	public void testFindFriends2() {
+		List<PersonInfo> res = service.findFriends(17428494, 2);
+		System.out.println(res.size());
+	}
+	
+	@Test
 	public void testFindFriendsGraph() {
 		Neo4jGraph<PersonInfo> res = service.findFriendsGraph(17428494, 1);
 		System.out.println(res.getRelationships().size());
 		System.out.println(res.getNodes().size());
+	}
+	
+	@Test
+	public void testFindClosestPeople() {
+		List<PersonInfo> res = service.findClosestPeople(17428494, 10);
+		System.out.println(res);
 	}
 }

@@ -1,11 +1,13 @@
 function all() {
-
+	
+	
+	
   $('#graph-button').click(
 	function() {
 	  var friends = [];
 	  var user = {};
 	  var userId = $('#user-id-input').val();
-      
+	  
 	  function ajaxFriends() {
 		return $.ajax({
 		  type : "GET",
@@ -44,7 +46,8 @@ function all() {
 			    {
 			      selector: 'node',
 			      style: {
-			        'background-color': '#666'
+			        'width': '8px',
+			        'height': '8px'
 			      }
 			    },
 			    {
@@ -55,12 +58,41 @@ function all() {
 			        'target-arrow-color': '#ccc',
 			        'target-arrow-shape': 'none'
 			      }
-			    }
+			    },
+			    {
+			      selector: ":active",
+				  style: {
+					"overlay-color": "black",
+					"overlay-padding": 3,
+					"overlay-opacity": 0.2
+				  }
+				}
 			  ]
 		    });
-			var layoutParams = getLayout('coseBilkent', null);
+			var layoutParams = getLayout('spread', null);
 			var layout = cy.makeLayout(layoutParams);
 			layout.run();
+			cy.on('mouseover', 'node', function(evt) {
+//			  this.css({
+//				    'pointer': 'hand'
+//			  });
+			  var info = this.data();
+			  this.qtip({
+				content: { 
+				  title: {
+				    text: "<a href='https://vk.com/id" + info.uid + "' target='_blank'>" + info.first_name + ' ' + info.last_name + "</a>"
+				  },
+				  text: "<a href='https://vk.com/id" + info.uid + "' target='_blank'><img src='" + info.photo_50 + "'/></a>"
+				},
+				position: {
+				  my: 'top center',
+				  at: 'bottom center'
+				},
+				style: {
+				  classes: 'qtip-bootstrap',
+				}
+			  });
+			});
 		});
     });
   
@@ -81,15 +113,15 @@ function all() {
     	},
     	spread: {
     	  name: 'spread',
-    	  animate: true,
+//    	  animate: true,
     	  fit: true, // Reset viewport to fit default simulationBounds
-    	  minDist: 10, // Minimum distance between nodes
+    	  minDist: 20, // Minimum distance between nodes
     	  padding: 10, // Padding
-    	  expandingFactor: -1.0, 
-    	  maxFruchtermanReingoldIterations: 50, // Maximum number of initial force-directed iterations
-    	  maxExpandIterations: 4, // Maximum number of expanding iterations
-    	  boundingBox: undefined, // Constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
-    	  randomize: true // uses random initial node positions on true
+//    	  expandingFactor: -1.0, 
+//    	  maxFruchtermanReingoldIterations: 50, // Maximum number of initial force-directed iterations
+//    	  maxExpandIterations: 4, // Maximum number of expanding iterations
+//    	  boundingBox: undefined, // Constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+//    	  randomize: true // uses random initial node positions on true
     	},
     	coseBilkent: {
       	  name: 'cose-bilkent'
