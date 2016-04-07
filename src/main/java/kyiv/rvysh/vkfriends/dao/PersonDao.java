@@ -62,13 +62,12 @@ public class PersonDao {
 		return queryExecutor.queryForGraph(query, params, PersonInfo.class);
 	}
 
-	public List<PersonInfo> findClosestPeople(int userId, int size) {
+	public Map<PersonInfo, Long> findClosestPeople(int userId, int size) {
 		LOGGER.info("Querying closest people for {}", userId);
 		Map<String, Object> params = new HashMap<>();
 		params.put("user_id", userId);
 		params.put("size", size);
 		// Hack because path length can not be parametrized
-		String query = LOAD_CLOSEST_PEOPLE; //.replaceAll("%DEPTH%", depth + "");
-		return queryExecutor.queryForList(query, params, PersonInfo.class);
+		return queryExecutor.queryForMap(LOAD_CLOSEST_PEOPLE, params, PersonInfo.class, Long.class);
 	}
 }

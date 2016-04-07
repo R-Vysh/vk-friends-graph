@@ -46,4 +46,11 @@ public class QueryExecutorJdbc implements QueryExecutor {
 		return null;
 	}
 
+	@Override
+	public <K, V> Map<K, V> queryForMap(String query, Map<String, Object> params, Class<K> keyClazz,
+			Class<V> valueClazz) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

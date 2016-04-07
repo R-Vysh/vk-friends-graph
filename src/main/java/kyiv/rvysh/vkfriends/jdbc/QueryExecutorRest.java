@@ -2,6 +2,7 @@ package kyiv.rvysh.vkfriends.jdbc;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,8 @@ import com.google.common.base.Throwables;
 import kyiv.rvysh.vkfriends.domain.graph.Neo4jData;
 import kyiv.rvysh.vkfriends.domain.graph.Neo4jGraph;
 import kyiv.rvysh.vkfriends.domain.graph.Neo4jResponse;
+import kyiv.rvysh.vkfriends.domain.graph.tuple.Neo4jTupleData;
+import kyiv.rvysh.vkfriends.domain.graph.tuple.Neo4jTupleResponse;
 import kyiv.rvysh.vkfriends.utils.CustomCharacterEscapes;
 import kyiv.rvysh.vkfriends.utils.ResourceUtils;
 
@@ -64,17 +67,6 @@ public class QueryExecutorRest implements QueryExecutor {
 		return execute(query, params, clazz);
 	}
 
-	private <T> List<T> execute(String query, Map<String, Object> params, Class<T> clazz) {
-		Neo4jResponse<T> response = executeInternal(query, params, clazz);
-		List<T> result = new ArrayList<>();
-		if (response != null) {
-			for (Neo4jData<T> data : response.getResults().get(0).getData()) {
-				result.addAll(data.getRow());
-			}
-		}
-		return result;
-	}
-
 	@Override
 	public <T> Neo4jGraph<T> queryForGraph(String query, Map<String, Object> params, Class<T> clazz) {
 		Neo4jResponse<T> response = executeInternal(query, params, clazz);
@@ -85,12 +77,59 @@ public class QueryExecutorRest implements QueryExecutor {
 		return result;
 	}
 
+	@Override
+	public <K, V> Map<K, V> queryForMap(String query, Map<String, Object> params, Class<K> keyClazz,
+			Class<V> valueClazz) {
+		Neo4jTupleResponse response = executeTupleInternal(query, params);
+		Map<K, V> result = new HashMap<K, V>();
+		if (response != null) {
+			for (Neo4jTupleData data : response.getResults().get(0).getData()) {
+				try {
+					K key = mapper.readValue(mapper.writeValueAsString(data.getRow().get(0)), keyClazz);
+					V value = mapper.readValue(mapper.writeValueAsString(data.getRow().get(1)), valueClazz);
+					result.put(key, value);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return result;
+	}
+
+	private <T> List<T> execute(String query, Map<String, Object> params, Class<T> clazz) {
+		Neo4jResponse<T> response = executeInternal(query, params, clazz);
+		List<T> result = new ArrayList<>();
+		if (response != null) {
+			for (Neo4jData<T> data : response.getResults().get(0).getData()) {
+				for (List<T> row : data.getRow()) {
+					result.addAll(row);
+				}
+			}
+		}
+		return result;
+	}
+
 	private <T> Neo4jResponse<T> executeInternal(String query, Map<String, Object> params, Class<T> clazz) {
 		Invocation.Builder reqBuilder = defaultBuilder();
 		try {
 			String responseString = reqBuilder.post(prepareRequest(query, params), String.class);
 			JavaType type = mapper.getTypeFactory().constructParametricType(Neo4jResponse.class, clazz);
 			Neo4jResponse<T> response = mapper.readValue(responseString, type);
+			if (!response.getErrors().isEmpty()) {
+				throw new RuntimeException("Neo4j errors : " + response.getErrors());
+			}
+			return response;
+		} catch (IOException e) {
+			Throwables.propagate(e);
+		}
+		return null;
+	}
+
+	private Neo4jTupleResponse executeTupleInternal(String query, Map<String, Object> params) {
+		Invocation.Builder reqBuilder = defaultBuilder();
+		try {
+			String responseString = reqBuilder.post(prepareRequest(query, params), String.class);
+			Neo4jTupleResponse response = mapper.readValue(responseString, Neo4jTupleResponse.class);
 			if (!response.getErrors().isEmpty()) {
 				throw new RuntimeException("Neo4j errors : " + response.getErrors());
 			}

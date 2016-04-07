@@ -6,8 +6,8 @@ public class Neo4jData<T> {
 	private List<List<T>> row;
 	private Neo4jGraph<T> graph;
 	
-	public List<T> getRow() {
-		return row.get(0);
+	public List<List<T>> getRow() {
+		return row;
 	}
 	public void setRow(List<List<T>> row) {
 		this.row = row;

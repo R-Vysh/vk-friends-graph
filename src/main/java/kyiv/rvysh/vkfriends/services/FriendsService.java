@@ -2,6 +2,7 @@ package kyiv.rvysh.vkfriends.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import kyiv.rvysh.vkfriends.dao.PersonDao;
 import kyiv.rvysh.vkfriends.domain.PersonInfo;
@@ -53,7 +54,7 @@ public class FriendsService {
 		return personDao.findFriendsGraph(userId, depth);
 	}
 	
-	public List<PersonInfo> findClosestPeople(int userId, int size) {
+	public Map<PersonInfo, Long> findClosestPeople(int userId, int size) {
 		return personDao.findClosestPeople(userId, size);
 	}
 	

@@ -17,4 +17,6 @@ public interface QueryExecutor {
 	<T> List<T> queryForList(String query, Map<String, Object> params, Class<T> clazz);
 	
 	<T> Neo4jGraph<T> queryForGraph(String query, Map<String, Object> params, Class<T> clazz);
+	
+	<K, V> Map<K,V> queryForMap(String query, Map<String, Object> params, Class<K> keyClazz, Class<V> valueClazz);
 }

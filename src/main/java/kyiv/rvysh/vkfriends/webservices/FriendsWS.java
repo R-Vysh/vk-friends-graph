@@ -1,6 +1,7 @@
 package kyiv.rvysh.vkfriends.webservices;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,12 @@ public class FriendsWS {
 		return service.findFriends(userId, depth);
 	}
 
+	@RequestMapping(value = "/get-closest-people/{userId}/{size}")
+	@ResponseBody
+	public Map<PersonInfo, Long> getClosestPeople(@PathVariable(value = "userId") int userId, @PathVariable(value = "size") int size) {
+		return service.findClosestPeople(userId, size);
+	}
+	
 	@RequestMapping(value = "/get-graph/{userId}")
 	@ResponseBody
 	public Neo4jGraph<PersonInfo> getFriendsGraph(@PathVariable int userId) {

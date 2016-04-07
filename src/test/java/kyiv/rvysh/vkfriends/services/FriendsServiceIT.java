@@ -1,6 +1,7 @@
 package kyiv.rvysh.vkfriends.services;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -46,7 +47,7 @@ public class FriendsServiceIT {
 	
 	@Test
 	public void testFindClosestPeople() {
-		List<PersonInfo> res = service.findClosestPeople(17428494, 10);
+		Map<PersonInfo, Long> res = service.findClosestPeople(17428494, 10);
 		System.out.println(res);
 	}
 }

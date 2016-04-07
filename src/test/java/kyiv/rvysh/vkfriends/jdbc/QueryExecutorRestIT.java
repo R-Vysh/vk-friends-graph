@@ -21,24 +21,24 @@ public class QueryExecutorRestIT {
 	@Autowired
 	@Qualifier("queryExecutorRest")
 	QueryExecutor executor;
-	
+
 	@Test
 	public void testQueryForLong() {
 		String query = "MATCH (n) RETURN count(n)";
-		Long result = executor.queryForLong( query, new HashMap<>() );
+		Long result = executor.queryForLong(query, new HashMap<>());
 		System.out.println(result);
 	}
-	
+
 	@Test
 	@Ignore
 	public void testDelete() {
 		String query = "MATCH (n) DETACH DELETE n";
-		executor.update( query, new HashMap<>() );
+		executor.update(query, new HashMap<>());
 		String query2 = "MATCH (n) RETURN count(n)";
-		Long result = executor.queryForLong( query2, new HashMap<>() );
+		Long result = executor.queryForLong(query2, new HashMap<>());
 		Assert.assertEquals(0L, result.longValue());
 	}
-	
+
 	@Test
 	public void testGetFriendsForId() {
 		String query = "MATCH (me:Person {uid: {props}.user_id }) MATCH (me)-[:FRIEND*..2 ]-(fr:Person)  RETURN fr";
@@ -50,5 +50,16 @@ public class QueryExecutorRestIT {
 		List<PersonInfo> result = executor.queryForList(query, queryParams, PersonInfo.class);
 		System.out.println(result.size());
 	}
-	
+
+	@Test
+	public void testGetClosestPeople() {
+		String query = "MATCH (me:Person {uid: {user_id} })-[:FRIEND]-(:Person)-[rel:FRIEND]-(people:Person) "
+				+ "return people, count(DISTINCT rel) " + "ORDER BY count(DISTINCT rel) DESC " + "limit {size}";
+		Map<String, Object> params = new HashMap<>();
+		params.put("size", 10);
+		params.put("user_id", 17428494);
+		Map<PersonInfo, Long> result = executor.queryForMap(query, params, PersonInfo.class, Long.class);
+		System.out.println(result.size());
+	}
+
 }
