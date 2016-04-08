@@ -6,14 +6,12 @@ import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 public class FriendsInfoDeserIT {
 
 	@Test
 	public void testFriendInfoDeser() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(new JodaModule());
 		String response = IOUtils.toString(new ClassPathResource("friends-list.json").getInputStream());
 		mapper.readValue(response, PersonInfoResponse.class);
 	}

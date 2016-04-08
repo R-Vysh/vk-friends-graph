@@ -25,7 +25,7 @@
 		<guava.version>19.0</guava.version>
 		<tomcat-jdbc.version>8.0.32</tomcat-jdbc.version>
 		<jersey-client.version>2.22.2</jersey-client.version>
-		
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
@@ -128,13 +128,13 @@
 		<!-- Jackson mapping -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
+			<artifactId>jackson-core</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-joda</artifactId>
-			<version>${jackson-joda.version}</version>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
 		</dependency>
 
 		<!-- Test libs -->

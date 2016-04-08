@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.google.common.base.Joiner;
 
 import kyiv.rvysh.vkfriends.domain.PersonInfo;
@@ -31,7 +30,6 @@ public class VkService {
 
 	public VkService() {
 		mapper = new ObjectMapper();
-		mapper.registerModule(new JodaModule());
 	}
 
 	public List<PersonInfo> listFriends(int userId, boolean loadInfo) {

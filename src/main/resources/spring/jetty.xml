@@ -24,7 +24,7 @@
 
 	</bean>
 
-	<bean id="jettyContextHandler" class="kyiv.rvysh.vkfriends.webhandlers.SpringHandler">
+	<bean id="jettyContextHandler" class="kyiv.rvysh.vkfriends.web.handlers.SpringHandler">
 		<property name="resourceBase" value="." />
 		<property name="contextPath" value="/" />
 		<property name="servletHandler">

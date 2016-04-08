@@ -1,4 +1,4 @@
-package kyiv.rvysh.vkfriends.webhandlers;
+package kyiv.rvysh.vkfriends.web.handlers;
 
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.springframework.beans.BeansException;
