@@ -70,11 +70,13 @@ public class QueryExecutorRest implements QueryExecutor {
 	@Override
 	public <T> Neo4jGraph<T> queryForGraph(String query, Map<String, Object> params, Class<T> clazz) {
 		Neo4jResponse<T> response = executeInternal(query, params, clazz);
-		Neo4jGraph<T> result = new Neo4jGraph<>();
+		List<Neo4jGraph<T>> result = new ArrayList<Neo4jGraph<T>>();
 		if (response != null) {
-			result = response.getResults().get(0).getData().get(0).getGraph();
+			for(Neo4jData<T> data : response.getResults().get(0).getData()) {
+			result.addAll(data.getGraph());
+			}
 		}
-		return result;
+		return Neo4jGraph.mergeGraphs(result);
 	}
 
 	@Override

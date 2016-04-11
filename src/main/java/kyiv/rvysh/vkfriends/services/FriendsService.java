@@ -7,6 +7,7 @@ import java.util.Map;
 import kyiv.rvysh.vkfriends.dao.PersonDao;
 import kyiv.rvysh.vkfriends.domain.PersonInfo;
 import kyiv.rvysh.vkfriends.domain.graph.Neo4jGraph;
+import kyiv.rvysh.vkfriends.utils.DepthLevel;
 import kyiv.rvysh.vkfriends.utils.Pair;
 
 public class FriendsService {
@@ -31,7 +32,7 @@ public class FriendsService {
 			Integer curDepth = node.getSecond();
 			if (!processedNodes.contains(id) && curDepth != 0) {
 				List<PersonInfo> friends = listFriends(id, loadInfo);
-				friends.forEach(value -> nodesToProcess.add(new Pair<>(value.uid, curDepth - 1)));
+				friends.forEach(value -> nodesToProcess.add(new Pair<>(value.getUid(), curDepth - 1)));
 				personDao.insertFriendship(id, friends);
 				processedNodes.add(id);
 			}
@@ -46,12 +47,8 @@ public class FriendsService {
 		return personDao.findFriends(userId, depth);
 	}
 
-	public Neo4jGraph<PersonInfo> findFriendsGraph(int userId) {
-		return findFriendsGraph(userId, 1);
-	}
-
-	public Neo4jGraph<PersonInfo> findFriendsGraph(int userId, int depth) {
-		return personDao.findFriendsGraph(userId, depth);
+	public Neo4jGraph<PersonInfo> findFriendsGraph(int userId, DepthLevel level) {
+		return personDao.findFriendsGraph(userId, level);
 	}
 	
 	public Map<PersonInfo, Long> findClosestPeople(int userId, int size) {

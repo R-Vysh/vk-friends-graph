@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kyiv.rvysh.vkfriends.domain.PersonInfo;
 import kyiv.rvysh.vkfriends.domain.graph.Neo4jGraph;
 import kyiv.rvysh.vkfriends.services.FriendsService;
+import kyiv.rvysh.vkfriends.utils.DepthLevel;
 
 @RequestMapping("/friends")
 public class FriendsWS {
@@ -58,14 +59,13 @@ public class FriendsWS {
 	@RequestMapping(value = "/get-graph/{userId}")
 	@ResponseBody
 	public Neo4jGraph<PersonInfo> getFriendsGraph(@PathVariable int userId) {
-		return service.findFriendsGraph(userId);
+		return service.findFriendsGraph(userId, DepthLevel.ONE);
 	}
 
-	@RequestMapping(value = "/get-graph/{userId}/{depth}")
+	@RequestMapping(value = "/get-graph-2/{userId}")
 	@ResponseBody
-	public Neo4jGraph<PersonInfo> getFriendsGraph(@PathVariable(value = "userId") int userId,
-			@PathVariable(value = "depth") int depth) {
-		return service.findFriendsGraph(userId, depth);
+	public Neo4jGraph<PersonInfo> getFriendsGraph2(@PathVariable int userId) {
+		return service.findFriendsGraph(userId, DepthLevel.TWO);
 	}
 
 	public void setService(FriendsService service) {

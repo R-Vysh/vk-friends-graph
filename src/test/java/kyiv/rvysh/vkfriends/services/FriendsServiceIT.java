@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import kyiv.rvysh.vkfriends.domain.PersonInfo;
 import kyiv.rvysh.vkfriends.domain.graph.Neo4jGraph;
+import kyiv.rvysh.vkfriends.utils.DepthLevel;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/spring/test-properties.xml", "classpath:/spring/dao.xml",
@@ -40,7 +41,7 @@ public class FriendsServiceIT {
 	
 	@Test
 	public void testFindFriendsGraph() {
-		Neo4jGraph<PersonInfo> res = service.findFriendsGraph(17428494, 1);
+		Neo4jGraph<PersonInfo> res = service.findFriendsGraph(17428494, DepthLevel.TWO);
 		System.out.println(res.getRelationships().size());
 		System.out.println(res.getNodes().size());
 	}

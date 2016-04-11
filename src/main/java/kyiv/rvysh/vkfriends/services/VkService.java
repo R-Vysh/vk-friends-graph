@@ -48,7 +48,7 @@ public class VkService {
 				List<PersonInfo> result = new ArrayList<>();
 				for (Integer id : ids) {
 					PersonInfo info = new PersonInfo();
-					info.uid = id;
+					info.setUid(id);
 					result.add(info);
 				}
 				return result;

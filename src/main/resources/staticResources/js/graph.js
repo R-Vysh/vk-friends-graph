@@ -7,7 +7,6 @@ function all() {
 		return $.ajax({
 			type : "GET",
 			url : "/friends/get-graph/" + userID,
-			timeout : 30000,
 			headers : {
 				"Accept" : "application/json; charset=utf-8",
 				"Content-Type" : "application/json; charset=utf-8"
@@ -19,7 +18,6 @@ function all() {
 		return $.ajax({
 			type : "GET",
 			url : "/friends/get-closest-people/" + userID + "/10",
-			timeout : 30000,
 			headers : {
 				"Accept" : "application/json; charset=utf-8",
 				"Content-Type" : "application/json; charset=utf-8"
@@ -62,13 +60,17 @@ function all() {
 		}
 	];
 
+	var defaultLayout = 'spread';
+	
 	buildGraphButton.click(function () {
 		var userId = userIdInput.val();
 		$.when(ajaxFriends(userId), ajaxClosestPeople(userId)).done(
 			function (responseRaw, responseRaw2) {
+			console.log("Response received");
 			var response = responseRaw[0];
 			var response2 = responseRaw2[0];
 			var cytoData = prepareGraphData(response, response2);
+			console.log("Building graph...");
 			buildGraph(cytoData);
 		});
 	});
@@ -121,7 +123,7 @@ function all() {
 				elements : graphData,
 				style : defaultStyle
 			});
-		var layoutParams = getLayout('spread', null);
+		var layoutParams = getLayout(defaultLayout, null);
 		var layout = cy.makeLayout(layoutParams);
 		layout.run();
 		cy.on('click', 'node', function (evt) {
@@ -167,8 +169,8 @@ function all() {
 			spread : {
 				name : 'spread',
 				fit : true, // Reset viewport to fit default simulationBounds
-				minDist : 20, // Minimum distance between nodes
-				padding : 10, // Padding
+				minDist : 10, // Minimum distance between nodes
+				padding : 5, // Padding
 			},
 			coseBilkent : {
 				name : 'cose-bilkent'
