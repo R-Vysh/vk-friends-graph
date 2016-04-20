@@ -41,7 +41,7 @@ public class FriendsServiceIT {
 	
 	@Test
 	public void testFindFriendsGraph() {
-		Neo4jGraph<PersonInfo> res = service.findFriendsGraph(17428494, DepthLevel.TWO);
+		Neo4jGraph<PersonInfo> res = service.findFriendsGraph(17428494, DepthLevel.ONE);
 		System.out.println(res.getRelationships().size());
 		System.out.println(res.getNodes().size());
 	}

@@ -16,4 +16,16 @@
 	<bean class="kyiv.rvysh.vkfriends.web.services.FriendsWS">
 		<property name="service" ref="friendsService" />
 	</bean>
+	
+	<bean class="kyiv.rvysh.vkfriends.web.services.GraphWS">
+		<property name="service">
+			<bean class="kyiv.rvysh.vkfriends.services.GraphService" >
+				<property name="communityFinder">
+					<bean class="kyiv.rvysh.vkfriends.graphalgorithms.CPMPersonInfo">
+						<property name="k" value="4" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+	</bean>
 </beans>

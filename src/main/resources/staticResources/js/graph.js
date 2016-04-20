@@ -1,8 +1,28 @@
 function all() {
-	var cyContainer = $('#cy');
-	var userIdInput = $('#user-id-input');
-	var buildGraphButton = $('#graph-button');
-
+	var $body = $("body");
+	var $cyContainer = $('#cy');
+	var $userIdInput = $('#user-id-input');
+	var $buildGraphButton = $('#graph-button');
+	var $findCliquesButton = $('#cliques-button');
+	var $findCommunitiesButton = $('#communities-button');
+	var $loadFromVkButton = $('#load-friends-button');
+	var $infoBlock = $('#info');
+	var $cliquesList = $('#info ul');
+	var cy;
+	var graphResponse;
+	var cliques = [];
+	
+	var ajaxVkFriends = function (userID) {
+		return $.ajax({
+			type : "POST",
+			url : "/friends/save/" + userID,
+			headers : {
+				"Accept" : "application/json; charset=utf-8",
+				"Content-Type" : "application/json; charset=utf-8"
+			}
+		});
+	};
+	
 	var ajaxFriends = function (userID) {
 		return $.ajax({
 			type : "GET",
@@ -18,6 +38,30 @@ function all() {
 		return $.ajax({
 			type : "GET",
 			url : "/friends/get-closest-people/" + userID + "/10",
+			headers : {
+				"Accept" : "application/json; charset=utf-8",
+				"Content-Type" : "application/json; charset=utf-8"
+			}
+		});
+	};
+	
+	var ajaxCliques = function () {
+		return $.ajax({
+			type : "POST",
+			data : JSON.stringify(graphResponse),
+			url : "/graph/cliques",
+			headers : {
+				"Accept" : "application/json; charset=utf-8",
+				"Content-Type" : "application/json; charset=utf-8"
+			}
+		});
+	};
+	
+	var ajaxCommunities = function () {
+		return $.ajax({
+			type : "POST",
+			data : JSON.stringify(graphResponse),
+			url : "/graph/communities",
 			headers : {
 				"Accept" : "application/json; charset=utf-8",
 				"Content-Type" : "application/json; charset=utf-8"
@@ -57,16 +101,91 @@ function all() {
 			style : {
 				"background-color" : "red"
 			}
+		}, {
+			selector : ".clique",
+			style : {
+				"background-color" : "yellow"
+			}
 		}
 	];
 
 	var defaultLayout = 'spread';
+
+	$loadFromVkButton.click(function () {
+		var userId = $userIdInput.val();
+		ajaxVkFriends(userId);
+	});
 	
-	buildGraphButton.click(function () {
-		var userId = userIdInput.val();
+	$findCliquesButton.click(function () {
+		$.when(ajaxCliques()).done(
+			function (responseRaw) {
+				$infoBlock.show();
+				$cliquesList.empty();
+				cliques = [];
+				for (var i = 0; i < responseRaw.length; i++) {
+					$cliquesList.append("<li>" + i + "</li>");
+					var clique = [];
+					for(var j = 0; j < responseRaw[i].length; j++) {
+						clique.push(responseRaw[i][j].uid);
+					}
+					cliques.push(clique);
+				}
+				var $cliquesLi = $("#info ul li");
+				$cliquesLi.hover(
+					function() {
+						var nodes = cy.elements("node");
+						var index = parseInt($(this).text());
+						var data = cliques[index];
+						for (var i = 0; i < data.length; i++) {
+							for(var j = 0; j < nodes.length; j++) {
+								if (nodes[j].data().uid == data[i]) {
+									nodes[j].addClass("clique");
+								}
+							}
+						}
+					}, 
+					function() {
+						var nodes = cy.elements("node");
+						for(var j = 0; j < nodes.length; j++) {
+							nodes[j].removeClass("clique");
+						}
+					}
+				);
+		});
+	});
+	
+	$findCommunitiesButton.click(function () {
+		$.when(ajaxCommunities()).done(
+			function (responseRaw) {
+				var newStyle = defaultStyle;
+				var nodes = cy.elements("node");
+				for (var i = 0; i < responseRaw.length; i++) {
+					var style = {
+						selector : ".community-" + i,
+						style : {
+							"background-color" : getRandomColor()
+						}
+					};
+					newStyle.push(style);
+					for (var j = 0; j < responseRaw[i].length; j++) {
+						for(var k = 0; k < nodes.length; k++) {
+							if (nodes[k].data().uid == responseRaw[i][j].uid) {
+								nodes[k].addClass("community-" + i);
+							}
+						}
+					}
+				}
+				cy.style(newStyle);
+				resizeElements();
+		});
+	});
+	
+	$buildGraphButton.click(function () {
+		var userId = $userIdInput.val();
 		$.when(ajaxFriends(userId), ajaxClosestPeople(userId)).done(
 			function (responseRaw, responseRaw2) {
 			console.log("Response received");
+			graphResponse = responseRaw[0];
 			var response = responseRaw[0];
 			var response2 = responseRaw2[0];
 			var cytoData = prepareGraphData(response, response2);
@@ -74,7 +193,7 @@ function all() {
 			buildGraph(cytoData);
 		});
 	});
-
+	
 	function prepareGraphData(friends, closestPeople) {
 		var nodes = [];
 		var edges = [];
@@ -118,10 +237,11 @@ function all() {
 	};
 
 	function buildGraph(graphData) {
-		var cy = cytoscape({
-				container : cyContainer,
+		cy = cytoscape({
+				container : $cyContainer,
 				elements : graphData,
-				style : defaultStyle
+				style : defaultStyle,
+				wheelSensitivity : 0.2
 			});
 		var layoutParams = getLayout(defaultLayout, null);
 		var layout = cy.makeLayout(layoutParams);
@@ -181,13 +301,19 @@ function all() {
 			params[i] = opts[i];
 		}
 		return params;
-	};
+	}
 
-	function resizeCy() {
-		cyContainer.width(window.innerWidth - 20);
-		cyContainer.height(window.innerHeight - 40);
-	};
+	function resizeElements() {
+		$infoBlock.height(window.innerHeight - 40);
+		$cyContainer.width(window.innerWidth - 20 - $infoBlock.width());
+		$cyContainer.height(window.innerHeight - 40);
+		
+	}
 
+	function getRandomColor() {
+		return "#"+((1<<24)*Math.random()|0).toString(16);	
+	}
+	
 	$(document).keypress(function (e) {
 		if (e.which == 13) {
 			$('#graph-button').click();
@@ -195,10 +321,15 @@ function all() {
 	});
 
 	$(window).resize(function () {
-		resizeCy();
+		resizeElements();
+	});
+	
+	$(document).on({
+	    ajaxStart: function() { $body.addClass("loading"); },
+	    ajaxStop: function() { $body.removeClass("loading"); }    
 	});
 
-	resizeCy();
+	resizeElements();
 }
 
 $(document).ready(all);
