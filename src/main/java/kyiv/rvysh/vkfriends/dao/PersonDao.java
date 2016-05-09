@@ -7,6 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jersey.repackaged.com.google.common.collect.Lists;
 import kyiv.rvysh.vkfriends.domain.PersonInfo;
 import kyiv.rvysh.vkfriends.domain.graph.Neo4jGraph;
 import kyiv.rvysh.vkfriends.jdbc.QueryExecutor;
@@ -37,14 +38,16 @@ public class PersonDao {
 	}
 
 	public void insertFriendship(int userId, List<PersonInfo> friends) {
-		LOGGER.info("Saving friends for {}", userId);
 		Map<String, Object> params = new HashMap<>();
-		params.put("friends", friends);
 		params.put("user_id", userId);
 		// unlink friends
 		queryExecutor.update("MATCH (:Person { uid: {user_id} })-[r:FRIEND]-() DELETE r", params);
 		// save friends
-		queryExecutor.update(SAVE_FRIENDSHIP, params);
+		LOGGER.info("Saving friends for {}", userId);
+		for (List<PersonInfo> part : Lists.partition(friends, 100)) {
+			params.put("friends", part);
+			queryExecutor.update(SAVE_FRIENDSHIP, params);
+		}
 	}
 
 	public List<PersonInfo> findFriends(int userId, int depth) {
