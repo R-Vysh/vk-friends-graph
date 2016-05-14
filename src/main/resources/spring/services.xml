@@ -32,4 +32,15 @@
 		<property name="personDao" ref="personDao" />
 	</bean>
 
+	<bean id="graphService" class="kyiv.rvysh.vkfriends.services.GraphService">
+		<property name="cpmCommunityFinder">
+			<bean class="kyiv.rvysh.vkfriends.graphalgorithms.CPMPersonInfo">
+				<property name="k" value="4" />
+			</bean>
+		</property>
+		<property name="gnCommunityFinder">
+			<bean class="kyiv.rvysh.vkfriends.graphalgorithms.GNPersonInfo" />
+		</property>
+	</bean>
+
 </beans>

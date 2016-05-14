@@ -17,12 +17,15 @@ import kyiv.rvysh.vkfriends.utils.ResourceUtils;
 public class PersonDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PersonDao.class);
 	private static String SAVE_FRIENDSHIP = ResourceUtils.classpathResourceAsString("sql/save-friends.sql");
+	private static String SAVE_LINKS = ResourceUtils.classpathResourceAsString("sql/save-links.sql");
 	private static String LOAD_FRIENDSHIP = ResourceUtils.classpathResourceAsString("sql/find-friends.sql");
 	private static String LOAD_FRIENDSHIP_GRAPH = ResourceUtils.classpathResourceAsString("sql/find-friends-graph.sql");
 	private static String LOAD_FRIENDSHIP_GRAPH_2 = ResourceUtils
 			.classpathResourceAsString("sql/find-friends-graph-2.sql");
+	private static String LOAD_CLOSEST_FRIENDS = ResourceUtils.classpathResourceAsString("sql/find-closest-friends.sql");
 	private static String LOAD_CLOSEST_PEOPLE = ResourceUtils.classpathResourceAsString("sql/find-closest-people.sql");
-
+	private static String LOAD_INFO = ResourceUtils.classpathResourceAsString("sql/find-person.sql");
+	
 	private QueryExecutor queryExecutor;
 
 	public PersonDao(QueryExecutor queryExecutor) {
@@ -41,7 +44,7 @@ public class PersonDao {
 		Map<String, Object> params = new HashMap<>();
 		params.put("user_id", userId);
 		// unlink friends
-		queryExecutor.update("MATCH (:Person { uid: {user_id} })-[r:FRIEND]-() DELETE r", params);
+//		queryExecutor.update("MATCH (:Person { uid: {user_id} })-[r:FRIEND]-() DELETE r", params);
 		// save friends
 		LOGGER.info("Saving friends for {}", userId);
 		for (List<PersonInfo> part : Lists.partition(friends, 100)) {
@@ -75,6 +78,15 @@ public class PersonDao {
 		}
 	}
 
+	public Map<PersonInfo, Long> findClosestFriends(int userId, int size) {
+		LOGGER.info("Querying closest friends for {}", userId);
+		Map<String, Object> params = new HashMap<>();
+		params.put("user_id", userId);
+		params.put("size", size);
+		// Hack because path length can not be parametrized
+		return queryExecutor.queryForMap(LOAD_CLOSEST_FRIENDS, params, PersonInfo.class, Long.class);
+	}
+
 	public Map<PersonInfo, Long> findClosestPeople(int userId, int size) {
 		LOGGER.info("Querying closest people for {}", userId);
 		Map<String, Object> params = new HashMap<>();
@@ -82,5 +94,23 @@ public class PersonDao {
 		params.put("size", size);
 		// Hack because path length can not be parametrized
 		return queryExecutor.queryForMap(LOAD_CLOSEST_PEOPLE, params, PersonInfo.class, Long.class);
+	}
+	
+	public void insertLinksOnly(int userId, List<PersonInfo> filteredFriends) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("user_id", userId);
+		// save friends
+		LOGGER.info("Saving friends for {}", userId);
+		for (List<PersonInfo> part : Lists.partition(filteredFriends, 100)) {
+			params.put("friends", part);
+			queryExecutor.update(SAVE_LINKS, params);
+		}
+	}
+
+	public PersonInfo loadPerson(int userId) {
+		LOGGER.info("Querying info for {}", userId);
+		Map<String, Object> params = new HashMap<>();
+		params.put("user_id", userId);
+		return queryExecutor.queryForObject(LOAD_INFO, params, PersonInfo.class);
 	}
 }

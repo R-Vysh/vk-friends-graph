@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,17 +19,24 @@ import kyiv.rvysh.vkfriends.services.GraphService;
 public class GraphWS {
 
 	private GraphService<PersonInfo> service;
-	
+
 	@RequestMapping(value = "/cliques", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Collection<Set<PersonInfo>>> findCliques(@RequestBody Neo4jGraph<PersonInfo> graph) {
 		return new ResponseEntity<>(service.findCliques(graph), HttpStatus.OK);
 	}
-	
-	@RequestMapping(value = "/communities", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/communities/cpm", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Collection<Set<PersonInfo>>> findCommunities(@RequestBody Neo4jGraph<PersonInfo> graph) {
-		return new ResponseEntity<>(service.findCommunities(graph), HttpStatus.OK);
+		return new ResponseEntity<>(service.findCommunitiesCpm(graph), HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/communities/gn/{edgesToRemove}", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Collection<Set<PersonInfo>>> findCommunities(
+			@PathVariable("edgesToRemove") Integer numOfEdges, @RequestBody Neo4jGraph<PersonInfo> graph) {
+		return new ResponseEntity<>(service.findCommunitiesGn(graph, numOfEdges), HttpStatus.OK);
 	}
 
 	public void setService(GraphService<PersonInfo> service) {

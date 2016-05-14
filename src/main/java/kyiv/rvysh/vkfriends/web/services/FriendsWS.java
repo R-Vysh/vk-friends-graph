@@ -27,7 +27,7 @@ public class FriendsWS {
 	
 	@RequestMapping(value = "/save/{userId}", method = RequestMethod.POST)
 	public ResponseEntity<Void> saveFriends(@PathVariable int userId) {
-		service.upsertFriends(userId, 2, true);
+		service.upsertFriendsGraph(userId, 1, true);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
@@ -44,12 +44,25 @@ public class FriendsWS {
 		return service.findFriends(userId, depth);
 	}
 
+	@RequestMapping(value = "/get-closest-friends/{userId}/{size}")
+	@ResponseBody
+	// TODO avoid using mapper
+	public Map<String, Long> getClosestFriends(@PathVariable(value = "userId") int userId,
+			@PathVariable(value = "size") int size) throws JsonProcessingException {
+		Map<PersonInfo, Long> map = service.findClosestFriends(userId, size);
+		Map<String, Long> result = new HashMap<String, Long>();
+		for (Map.Entry<PersonInfo, Long> entry : map.entrySet()) {
+			result.put(mapper.writeValueAsString(entry.getKey()), entry.getValue());
+		}
+		return result;
+	}
+	
 	@RequestMapping(value = "/get-closest-people/{userId}/{size}")
 	@ResponseBody
 	// TODO avoid using mapper
 	public Map<String, Long> getClosestPeople(@PathVariable(value = "userId") int userId,
 			@PathVariable(value = "size") int size) throws JsonProcessingException {
-		Map<PersonInfo, Long> map = service.findClosestPeople(userId, size);
+		Map<PersonInfo, Long> map = service.recommendPeople(userId, size);
 		Map<String, Long> result = new HashMap<String, Long>();
 		for (Map.Entry<PersonInfo, Long> entry : map.entrySet()) {
 			result.put(mapper.writeValueAsString(entry.getKey()), entry.getValue());
