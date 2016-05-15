@@ -41,6 +41,9 @@
 		<property name="gnCommunityFinder">
 			<bean class="kyiv.rvysh.vkfriends.graphalgorithms.GNPersonInfo" />
 		</property>
+		<property name="topLeadersFinder">
+			<bean class="kyiv.rvysh.vkfriends.graphalgorithms.topleaders.TopLeadersPersonInfo" />
+		</property>
 	</bean>
 
 </beans>

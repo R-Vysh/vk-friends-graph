@@ -28,15 +28,22 @@ public class GraphWS {
 
 	@RequestMapping(value = "/communities/cpm", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<Collection<Set<PersonInfo>>> findCommunities(@RequestBody Neo4jGraph<PersonInfo> graph) {
+	public ResponseEntity<Collection<Set<PersonInfo>>> findCommunitiesCPM(@RequestBody Neo4jGraph<PersonInfo> graph) {
 		return new ResponseEntity<>(service.findCommunitiesCpm(graph), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/communities/gn/{edgesToRemove}", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<Collection<Set<PersonInfo>>> findCommunities(
+	public ResponseEntity<Collection<Set<PersonInfo>>> findCommunitiesGN(
 			@PathVariable("edgesToRemove") Integer numOfEdges, @RequestBody Neo4jGraph<PersonInfo> graph) {
 		return new ResponseEntity<>(service.findCommunitiesGn(graph, numOfEdges), HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/communities/topleaders/{clusters}", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Collection<Set<PersonInfo>>> findCommunitiesTopLeaders(
+			@PathVariable("clusters") Integer numOfClusters, @RequestBody Neo4jGraph<PersonInfo> graph) {
+		return new ResponseEntity<>(service.findCommunitiesTopleaders(graph, numOfClusters), HttpStatus.OK);
 	}
 
 	public void setService(GraphService<PersonInfo> service) {

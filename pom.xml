@@ -195,6 +195,11 @@
 			<artifactId>jersey-client</artifactId>
 			<version>${jersey-client.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.collections</groupId>
+			<artifactId>collections-generic</artifactId>
+			<version>4.01</version>
+		</dependency>
 	</dependencies>
 
 	<build>

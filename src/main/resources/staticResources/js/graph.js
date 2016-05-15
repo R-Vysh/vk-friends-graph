@@ -7,6 +7,7 @@ function all() {
 	var $findCommunitiesCPMButton = $('#communities-cpm-button');
 	var $gnInput = $('#gn-input');
 	var $findCommunitiesGNButton = $('#communities-gn-button');
+	var $findCommunitiesTLButton = $('#communities-tl-button');
 	var $loadFromVkButton = $('#load-friends-button');
 	var $infoBlock = $('#info');
 	var $cliquesList = $('#info ul');
@@ -87,6 +88,18 @@ function all() {
 			type : "POST",
 			data : JSON.stringify(graphResponse),
 			url : "/graph/communities/gn/" + $gnInput.val(),
+			headers : {
+				"Accept" : "application/json; charset=utf-8",
+				"Content-Type" : "application/json; charset=utf-8"
+			}
+		});
+	};
+	
+	var ajaxTLCommunities = function () {
+		return $.ajax({
+			type : "POST",
+			data : JSON.stringify(graphResponse),
+			url : "/graph/communities/topleaders/" + $gnInput.val(),
 			headers : {
 				"Accept" : "application/json; charset=utf-8",
 				"Content-Type" : "application/json; charset=utf-8"
@@ -188,6 +201,13 @@ function all() {
 	
 	$findCommunitiesCPMButton.click(function () {
 		$.when(ajaxCPMCommunities()).done(
+			function (responseRaw) {
+				drawCommunities(responseRaw);
+		});
+	});
+	
+	$findCommunitiesTLButton.click(function () {
+		$.when(ajaxTLCommunities()).done(
 			function (responseRaw) {
 				drawCommunities(responseRaw);
 		});

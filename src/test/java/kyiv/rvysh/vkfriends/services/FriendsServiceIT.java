@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import kyiv.rvysh.vkfriends.dao.PersonDao;
 import kyiv.rvysh.vkfriends.domain.PersonInfo;
 import kyiv.rvysh.vkfriends.domain.graph.Neo4jGraph;
 import kyiv.rvysh.vkfriends.utils.DepthLevel;
