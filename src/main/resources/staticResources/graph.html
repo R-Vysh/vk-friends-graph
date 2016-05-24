@@ -25,15 +25,26 @@
 		<input type="text" id="user-id-input" value="17428494"></input>
 		<div id="graph-button" class="button">Build graph</div>
 		<div id="cliques-button" class="button">Find cliques</div>
-		<div id="communities-cpm-button" class="button">Find communities CPM</div>
-		<input type="text" id="gn-input" value="30"></input>
-		<div id="communities-gn-button" class="button">Find communities GN</div>
-		<div id="communities-tl-button" class="button">Find communities TL</div>
-		<div id="load-friends-button" class="button">Load friends from Vk</div>
+		<input type="text" id="communities-param" value="30"></input> 
+		<select id="communities-method">
+			<option value="girvanNewman">Girvan-Newman</option>
+			<option value="cliquePercolation">Clique Percolation</option>
+			<option value="topLeaders">Top Leaders</option>
+			<option value="labelPropagation1">Label Propagation1</option>
+			<option value="labelPropagation2">Label Propagation2</option>
+			<option value="labelPropagation3">Label Propagation3</option>
+			<option value="chineseWhisperer">Chinese Whisperer</option>
+			<!-- <option value="markov">Markov</option>  -->
+		</select>
+		<div id="communities-button" class="button">Find communities</div>
+		<div id="load-friends-button" class="button">Load from Vk</div>
+		
 	</div>
 	<div id="wrapper">
 		<div id="cy"></div>
-		<div id="info"><ul></ul></div>
+		<div id="info">
+			<ul></ul>
+		</div>
 	</div>
 	<div class="modal"></div>
 </body>

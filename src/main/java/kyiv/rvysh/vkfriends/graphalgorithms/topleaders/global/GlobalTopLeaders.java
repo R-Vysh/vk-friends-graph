@@ -235,7 +235,7 @@ public class GlobalTopLeaders<V, E> implements Transformer<Graph<V, E>, Partitio
 			new_clustring.addCluster(new HashSet<V>());
 			new_clustring.getCommunities().lastElement().add(centers.get(i));
 		}
-		for (V v : nodesToConsider)// graph.getVertices())
+		for (V v : nodesToConsider)
 			if (!centerNodes.contains(v)) {
 				// Find the most probable cluster for node V
 				Vector<V> tmp = findCluster(v);
@@ -260,7 +260,8 @@ public class GlobalTopLeaders<V, E> implements Transformer<Graph<V, E>, Partitio
 	}
 
 	private V centerOfCluster(Set<V> clusterNodes) {
-		GraphCentralityBasedMedoid<V, E> centrality = new GraphCentralityBasedMedoid<V, E>(new Degree<V, E>(), graph);
+		GraphCentralityBasedMedoid<V, E> centrality = new GraphCentralityBasedMedoid<V, E>(new Degree<V, E>(),
+				graph);
 		return centrality.findCentroid(clusterNodes);
 	}
 
@@ -287,11 +288,10 @@ public class GlobalTopLeaders<V, E> implements Transformer<Graph<V, E>, Partitio
 	private void updateNodeSet() {
 		nodesToConsider.clear();
 		for (V center : centers) {
-			for (V v : getNeighbors(center)) {// sourceNeighborhoodThreshold)) {
+			for (V v : getNeighbors(center)) {
 				nodesToConsider.addAll(getNeighbors(v));
 			}
 		}
-
 	}
 
 	public int getIterated() {
@@ -307,7 +307,6 @@ public class GlobalTopLeaders<V, E> implements Transformer<Graph<V, E>, Partitio
 
 	public ArrayList<V> initializeCenters(int numberOfCenters, Graph<V, E> graph) {
 		ArrayList<V> centers = new ArrayList<V>();
-
 		if (hardCodedInitialCenters != null) {
 			for (V v : hardCodedInitialCenters) {
 				V mapped = null;
@@ -322,16 +321,11 @@ public class GlobalTopLeaders<V, E> implements Transformer<Graph<V, E>, Partitio
 			}
 			return centers;
 		}
-
 		int maxCandidates = 1;
-
 		ArrayList<ArrayList<V>> candidateCenters = new ArrayList<ArrayList<V>>();
 		ArrayList<ArrayList<V>> remainingOfCandidateCenters = new ArrayList<ArrayList<V>>();
-
 		final GraphVertexScorer<V, E> centrality = new ClusteringDegree<V, E>();
 		centrality.setGraph(graph);
-		// TODO: Sort vertexes based on their centrality(nlogn) or just take k
-		// most centrals(kn)? the current one is better if k << logn ???
 		ArrayList<V> ver = new ArrayList<V>(graph.getVertices());
 
 		Collections.sort(ver, new Comparator<V>() {
@@ -339,17 +333,12 @@ public class GlobalTopLeaders<V, E> implements Transformer<Graph<V, E>, Partitio
 				return (int) (centrality.getVertexScore(o2) - centrality.getVertexScore(o1));
 			}
 		});
-
 		boolean found = false;
 		while (!found) {
-
 			if (ver.size() == 0)
 				break;
-
 			V result = ver.get(0);
-
 			ver.remove(result);
-
 			if (candidateCenters.size() == 0) {
 				candidateCenters.add(new ArrayList<V>());
 				remainingOfCandidateCenters.add(new ArrayList<V>());
@@ -361,25 +350,15 @@ public class GlobalTopLeaders<V, E> implements Transformer<Graph<V, E>, Partitio
 
 			for (ArrayList<V> cc : candidateCenters) {
 				probs.add(new ArrayList<V>());
-				// boolean add = true;
 				for (V v : cc) {
-					// Set<V> tmp = new HashSet<V>(graph.getNeighbors(v));
-					// tmp.retainAll(graph.getNeighbors(result));
-					// if (tmp.size() >= centersClossenessThreshold)// TODO:
-					// Could be improved by having depth
-					// probs.lastElement().add(v);
-
 					double tmp = getCloseness(v, result);
-					if (tmp >= centersClossenessThreshold)// TODO: Could be
-															// improved by
-															// having depth
+					if (tmp >= centersClossenessThreshold) {
 						probs.lastElement().add(v);
+					}
 				}
 			}
-
 			ArrayList<ArrayList<V>> newCandidateCenters = new ArrayList<ArrayList<V>>();
 			ArrayList<ArrayList<V>> newRemainingOfCandidateCenters = new ArrayList<ArrayList<V>>();
-
 			for (int i = 0; i < candidateCenters.size(); i++) {
 				if (probs.get(i).size() == 0) {
 					newCandidateCenters.add(new ArrayList<V>(candidateCenters.get(i)));
@@ -400,7 +379,6 @@ public class GlobalTopLeaders<V, E> implements Transformer<Graph<V, E>, Partitio
 					}
 				}
 			}
-
 			for (int i = 0; i < candidateCenters.size(); i++) {
 				if (probs.get(i).size() != 0) {
 					newCandidateCenters.add(new ArrayList<V>(candidateCenters.get(i)));
@@ -408,7 +386,8 @@ public class GlobalTopLeaders<V, E> implements Transformer<Graph<V, E>, Partitio
 					newRemainingOfCandidateCenters.add(new ArrayList<V>(remainingOfCandidateCenters.get(i)));
 					for (V prob : probs.get(i)) {
 						newCandidateCenters.get(newCandidateCenters.size() - 1).remove(prob);
-						newRemainingOfCandidateCenters.get(newRemainingOfCandidateCenters.size() - 1).add(prob);
+						newRemainingOfCandidateCenters.get(newRemainingOfCandidateCenters.size() - 1)
+								.add(prob);
 					}
 
 					if (newCandidateCenters.get(newCandidateCenters.size() - 1).size() == numberOfCenters) {
@@ -417,7 +396,6 @@ public class GlobalTopLeaders<V, E> implements Transformer<Graph<V, E>, Partitio
 					}
 				}
 			}
-
 			if (newCandidateCenters.size() > maxCandidates) {
 				candidateCenters = new ArrayList<ArrayList<V>>(newCandidateCenters.subList(0, maxCandidates));
 				remainingOfCandidateCenters = new ArrayList<ArrayList<V>>(
@@ -427,16 +405,12 @@ public class GlobalTopLeaders<V, E> implements Transformer<Graph<V, E>, Partitio
 				remainingOfCandidateCenters = newRemainingOfCandidateCenters;
 			}
 		}
-
 		while (!found) {
 			for (int i = 0; i < candidateCenters.size(); i++) {
 				if (remainingOfCandidateCenters.get(i).size() > 0) {
 					candidateCenters.get(i).add(remainingOfCandidateCenters.get(i).get(0));
 				} else
 					found = true;
-
-				// candidateCenters.get(i).add(remainingOfCandidateCenters.get(i).get(0));
-				// remainingOfCandidateCenters.get(i).get(0);
 				if (candidateCenters.get(i).size() == numberOfCenters) {
 					centers = candidateCenters.get(i);
 					found = true;
@@ -445,7 +419,6 @@ public class GlobalTopLeaders<V, E> implements Transformer<Graph<V, E>, Partitio
 			}
 
 		}
-
 		return centers;
 	}
 

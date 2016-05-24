@@ -44,6 +44,15 @@
 		<property name="topLeadersFinder">
 			<bean class="kyiv.rvysh.vkfriends.graphalgorithms.topleaders.TopLeadersPersonInfo" />
 		</property>
+		<property name="lpCommunityFinder">
+			<bean class="kyiv.rvysh.vkfriends.graphalgorithms.labelpropagation.LabelPropagationClusterer" />
+		</property>
+		<property name="cwCommunityFinder">
+			<bean class="kyiv.rvysh.vkfriends.graphalgorithms.ChineseWhispersClusterer" />
+		</property>
+		<property name="markovCommunityFinder">
+			<bean class="kyiv.rvysh.vkfriends.graphalgorithms.markov.MarkovClustererPersonInfo" />
+		</property>
 	</bean>
 
 </beans>

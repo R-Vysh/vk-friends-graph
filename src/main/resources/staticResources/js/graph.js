@@ -4,10 +4,9 @@ function all() {
 	var $userIdInput = $('#user-id-input');
 	var $buildGraphButton = $('#graph-button');
 	var $findCliquesButton = $('#cliques-button');
-	var $findCommunitiesCPMButton = $('#communities-cpm-button');
-	var $gnInput = $('#gn-input');
-	var $findCommunitiesGNButton = $('#communities-gn-button');
-	var $findCommunitiesTLButton = $('#communities-tl-button');
+	var $findCommunitiesButton = $('#communities-button');
+	var $communitiesParameterInput = $('#communities-param');
+	var $communitiesMethod = $('#communities-method');
 	var $loadFromVkButton = $('#load-friends-button');
 	var $infoBlock = $('#info');
 	var $cliquesList = $('#info ul');
@@ -15,7 +14,7 @@ function all() {
 	var graphResponse;
 	var cliques = [];
 	
-	var ajaxVkFriends = function (userID) {
+	var ajaxVkFriends = function(userID) {
 		return $.ajax({
 			type : "POST",
 			url : "/friends/save/" + userID,
@@ -26,7 +25,7 @@ function all() {
 		});
 	};
 	
-	var ajaxFriends = function (userID) {
+	var ajaxFriends = function(userID) {
 		return $.ajax({
 			type : "GET",
 			url : "/friends/get-graph/" + userID,
@@ -37,7 +36,7 @@ function all() {
 		});
 	};
 
-	var ajaxClosestFriends = function (userID) {
+	var ajaxClosestFriends = function(userID) {
 		return $.ajax({
 			type : "GET",
 			url : "/friends/get-closest-friends/" + userID + "/10",
@@ -48,7 +47,7 @@ function all() {
 		});
 	};
 	
-	var ajaxClosestPeople = function (userID) {
+	var ajaxClosestPeople = function(userID) {
 		return $.ajax({
 			type : "GET",
 			url : "/friends/get-closest-people/" + userID + "/10",
@@ -59,7 +58,7 @@ function all() {
 		});
 	};
 	
-	var ajaxCliques = function () {
+	var ajaxCliques = function() {
 		return $.ajax({
 			type : "POST",
 			data : JSON.stringify(graphResponse),
@@ -71,7 +70,7 @@ function all() {
 		});
 	};
 	
-	var ajaxCPMCommunities = function () {
+	var ajaxCPMCommunities = function() {
 		return $.ajax({
 			type : "POST",
 			data : JSON.stringify(graphResponse),
@@ -83,11 +82,11 @@ function all() {
 		});
 	};
 
-	var ajaxGNCommunities = function () {
+	var ajaxGNCommunities = function() {
 		return $.ajax({
 			type : "POST",
 			data : JSON.stringify(graphResponse),
-			url : "/graph/communities/gn/" + $gnInput.val(),
+			url : "/graph/communities/gn/" + $communitiesParameterInput.val(),
 			headers : {
 				"Accept" : "application/json; charset=utf-8",
 				"Content-Type" : "application/json; charset=utf-8"
@@ -95,11 +94,71 @@ function all() {
 		});
 	};
 	
-	var ajaxTLCommunities = function () {
+	var ajaxTLCommunities = function() {
 		return $.ajax({
 			type : "POST",
 			data : JSON.stringify(graphResponse),
-			url : "/graph/communities/topleaders/" + $gnInput.val(),
+			url : "/graph/communities/topleaders/" + $communitiesParameterInput.val(),
+			headers : {
+				"Accept" : "application/json; charset=utf-8",
+				"Content-Type" : "application/json; charset=utf-8"
+			}
+		});
+	};
+	
+	var ajaxLPCommunities1 = function() {
+		return $.ajax({
+			type : "POST",
+			data : JSON.stringify(graphResponse),
+			url : "/graph/communities/lp1",
+			headers : {
+				"Accept" : "application/json; charset=utf-8",
+				"Content-Type" : "application/json; charset=utf-8"
+			}
+		});
+	};
+	
+	var ajaxLPCommunities2 = function() {
+		return $.ajax({
+			type : "POST",
+			data : JSON.stringify(graphResponse),
+			url : "/graph/communities/lp2",
+			headers : {
+				"Accept" : "application/json; charset=utf-8",
+				"Content-Type" : "application/json; charset=utf-8"
+			}
+		});
+	};
+	
+	var ajaxLPCommunities3 = function() {
+		return $.ajax({
+			type : "POST",
+			data : JSON.stringify(graphResponse),
+			url : "/graph/communities/lp3/" + $communitiesParameterInput.val(),
+			headers : {
+				"Accept" : "application/json; charset=utf-8",
+				"Content-Type" : "application/json; charset=utf-8"
+			}
+		});
+	};
+	
+	var ajaxCWCommunities = function() {
+		return $.ajax({
+			type : "POST",
+			data : JSON.stringify(graphResponse),
+			url : "/graph/communities/cw",
+			headers : {
+				"Accept" : "application/json; charset=utf-8",
+				"Content-Type" : "application/json; charset=utf-8"
+			}
+		});
+	};
+	
+	var ajaxMarkovCommunities = function() {
+		return $.ajax({
+			type : "POST",
+			data : JSON.stringify(graphResponse),
+			url : "/graph/communities/markov",
 			headers : {
 				"Accept" : "application/json; charset=utf-8",
 				"Content-Type" : "application/json; charset=utf-8"
@@ -149,6 +208,17 @@ function all() {
 
 	var defaultLayout = 'spread';
 
+	var methodMapping = {
+		girvanNewman: ajaxGNCommunities,
+		cliquePercolation: ajaxCPMCommunities,
+		topLeaders: ajaxTLCommunities,
+		labelPropagation1: ajaxLPCommunities1,
+		labelPropagation2: ajaxLPCommunities2,
+		labelPropagation3: ajaxLPCommunities3,
+		chineseWhisperer: ajaxCWCommunities,
+		markov: ajaxMarkovCommunities
+	};
+	
 	$loadFromVkButton.click(function () {
 		var userId = $userIdInput.val();
 		ajaxVkFriends(userId);
@@ -192,22 +262,9 @@ function all() {
 		});
 	});
 	
-	$findCommunitiesGNButton.click(function () {
-		$.when(ajaxGNCommunities()).done(
-			function (responseRaw) {
-				drawCommunities(responseRaw);
-		});
-	});
-	
-	$findCommunitiesCPMButton.click(function () {
-		$.when(ajaxCPMCommunities()).done(
-			function (responseRaw) {
-				drawCommunities(responseRaw);
-		});
-	});
-	
-	$findCommunitiesTLButton.click(function () {
-		$.when(ajaxTLCommunities()).done(
+	$findCommunitiesButton.click(function() {
+		var methodAjax = methodMapping[$communitiesMethod.val()];
+		$.when(methodAjax()).done(
 			function (responseRaw) {
 				drawCommunities(responseRaw);
 		});
@@ -229,8 +286,13 @@ function all() {
 	});
 	
 	function drawCommunities(response) {
-		var newStyle = defaultStyle;
 		var nodes = cy.elements("node");
+		for (var i = 0; i < 100; i++) {
+			for (var j = 0; j < nodes.length; j++) {
+				nodes[j].removeClass("community-" + i);
+			}
+		}
+		var newStyle = defaultStyle;
 		for (var i = 0; i < response.length; i++) {
 			var style = {
 				selector : ".community-" + i,

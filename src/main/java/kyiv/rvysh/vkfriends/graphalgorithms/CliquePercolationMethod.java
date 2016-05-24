@@ -21,7 +21,7 @@ public abstract class CliquePercolationMethod<T> {
 
 	protected abstract List<T> getLargerNodes(Graph<T, Neo4jEdge> g, T vi);
 
-	public Collection<Set<T>> execute(Neo4jGraph<T> g) {
+	public Collection<Set<T>> clusterize(Neo4jGraph<T> g) {
 		return execute(JgraphtTransform.neo4jToJgraphtGraph(g));
 	}
 
