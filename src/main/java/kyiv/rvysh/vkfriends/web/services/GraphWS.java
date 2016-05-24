@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import edu.uci.ics.jung.graph.Graph;
 import kyiv.rvysh.vkfriends.domain.PersonInfo;
+import kyiv.rvysh.vkfriends.domain.graph.Neo4jEdge;
 import kyiv.rvysh.vkfriends.domain.graph.Neo4jGraph;
 import kyiv.rvysh.vkfriends.services.GraphService;
+import kyiv.rvysh.vkfriends.utils.Pair;
 
 @RequestMapping("/graph")
 public class GraphWS {
@@ -81,6 +84,12 @@ public class GraphWS {
 	public ResponseEntity<Collection<Set<PersonInfo>>> findCommunitiesMarkov(
 			@RequestBody Neo4jGraph<PersonInfo> graph) {
 		return new ResponseEntity<>(service.findCommunitiesMarkov(graph), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/generate", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Pair<Collection<Set<PersonInfo>>, Neo4jGraph<PersonInfo>>> generateGraph() {
+		return new ResponseEntity<>(service.generateTestGraph(), HttpStatus.OK);
 	}
 	
 	public void setService(GraphService<PersonInfo> service) {

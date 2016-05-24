@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.uci.ics.jung.graph.Graph;
 import kyiv.rvysh.vkfriends.domain.graph.Neo4jEdge;
 import kyiv.rvysh.vkfriends.domain.graph.Neo4jGraph;
@@ -21,10 +18,7 @@ import kyiv.rvysh.vkfriends.jung.JungTransform;
  * @author JiriKrizek
  */
 public abstract class MarkovClusterer<T> {
-	private static final Logger LOGGER = LoggerFactory.getLogger(MarkovClusterer.class);
 	static final double EPSILON = 0.00000001;
-	// private GraphModel graphModel;
-	// private Graph tempGraph;
 	// Algorithm settings
 	private double power = 2L;
 	private double inflation = 2L;
@@ -107,34 +101,6 @@ public abstract class MarkovClusterer<T> {
 					resMap.put(cluster, clust);
 				}
 			}
-			// result = new MCClusterImpl[resMap.size()];
-			//
-			// for (Entry<Integer, MCClusterImpl> entry : resMap.entrySet()) {
-			// Integer key = entry.getKey();
-			// MCClusterImpl value = entry.getValue();
-			//
-			// result[key] = value;
-			// }
-			//
-			// Map<List<Integer>, MCClusterImpl> multipleClustMap = new
-			// HashMap<List<Integer>, MCClusterImpl>();
-			//
-			// int multipClId = matrix.getNumRows();
-			// if (extraClusters && mcCurrentNode.isMultiCluster()) {
-			// List<Integer> list = new ArrayList<Integer>();
-			// for (MCClusterImpl c : mcCurrentNode.getClusters()) {
-			// list.add(c.getId());
-			// }
-			// MCClusterImpl clust;
-			// if (multipleClustMap.containsKey(list)) {
-			// clust = multipleClustMap.get(list);
-			// } else {
-			// clust = new MCClusterImpl(multipClId);
-			// clust.addNode(mcCurrentNode);
-			// multipleClustMap.put(list, clust);
-			// resMap.put(multipClId++, clust);
-			// }
-			// }
 		}
 
 		for (Map.Entry<Integer, Set<T>> entry : resMap.entrySet()) {

@@ -7,6 +7,7 @@ function all() {
 	var $findCommunitiesButton = $('#communities-button');
 	var $communitiesParameterInput = $('#communities-param');
 	var $communitiesMethod = $('#communities-method');
+	var $generateGraphButton = $('#generate-graph-button');
 	var $loadFromVkButton = $('#load-friends-button');
 	var $infoBlock = $('#info');
 	var $cliquesList = $('#info ul');
@@ -166,6 +167,17 @@ function all() {
 		});
 	};
 	
+	var ajaxGenerateGraph = function() {
+		return $.ajax({
+			type : "POST",
+			url : "/graph/generate",
+			headers : {
+				"Accept" : "application/json; charset=utf-8",
+				"Content-Type" : "application/json; charset=utf-8"
+			}
+		});
+	};
+	
 	var defaultStyle = [{
 			selector : 'node',
 			style : {
@@ -262,6 +274,17 @@ function all() {
 		});
 	});
 	
+	$generateGraphButton.click(function () {
+		$.when(ajaxGenerateGraph()).done(
+			function (responseRaw) {
+				graphResponse = responseRaw.second;
+				var cytoData = prepareGraphData(responseRaw.second, [], []);
+				console.log("Building graph...");
+				buildGraph(cytoData);
+			}
+		);
+	});
+	
 	$findCommunitiesButton.click(function() {
 		var methodAjax = methodMapping[$communitiesMethod.val()];
 		$.when(methodAjax()).done(
@@ -319,14 +342,22 @@ function all() {
 		for (var i = 0; i < friends.nodes.length; i++) {
 			var node = {};
 			node.group = 'nodes';
-			node.data = friends.nodes[i].properties;
+			if (friends.nodes[i].properties && !Number.isInteger(friends.nodes[i].properties)) {
+				node.data = friends.nodes[i].properties;
+			} else {
+				node.data = {'uid':'fake', 'first_name':'fake', 'last_name':'fake', 'photo_50':'fake'};
+			}
 			node.data.id = friends.nodes[i].id;
 			nodes.push(node);
 		}
 		for (var i = 0; i < friends.relationships.length; i++) {
 			var edge = {};
 			edge.group = 'edges';
-			edge.data = friends.relationships[i].properties;
+			if (friends.relationships[i].properties) {
+				edge.data = friends.relationships[i].properties;
+			} else {
+				edge.data = {};
+			}
 			edge.data.id = friends.relationships[i].id;
 			edge.data.source = friends.relationships[i].startNode;
 			edge.data.target = friends.relationships[i].endNode;

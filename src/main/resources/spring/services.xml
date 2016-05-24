@@ -53,6 +53,10 @@
 		<property name="markovCommunityFinder">
 			<bean class="kyiv.rvysh.vkfriends.graphalgorithms.markov.MarkovClustererPersonInfo" />
 		</property>
+		<property name="graphGenerator">
+			<bean class="kyiv.rvysh.vkfriends.graphalgorithms.evaluation.PlantedLPartition" />
+		</property>
+		
 	</bean>
 
 </beans>

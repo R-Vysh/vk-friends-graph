@@ -1,23 +1,18 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package kyiv.rvysh.vkfriends.graphalgorithms.markov;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Jiri Krizek
  */
+@SuppressWarnings("unchecked")
 class PrintableDenseMatrix64F extends DenseMatrix64F implements NodesMatrix {
-	private static final Logger LOGGER = LoggerFactory.getLogger(PrintableDenseMatrix64F.class);
-    private int N;
+	private static final long serialVersionUID = 8377428710547599250L;
+	private int N;
     private double epsilon;
 
     public PrintableDenseMatrix64F(int cols, int rows) {
@@ -104,9 +99,7 @@ class PrintableDenseMatrix64F extends DenseMatrix64F implements NodesMatrix {
                 }
             }
             if(onlyZeros) {
-                //logger.log(Level.INFO, "Current row {0} has all zero values", row);
             } else {
-                //logger.log(Level.INFO, "Current row {0} has some values", row);
                 double[] nonZeroRow = this.getRowNum(row);
                 nonZeroRows.add(nonZeroRow);
             }

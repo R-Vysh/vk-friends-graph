@@ -319,10 +319,6 @@ public class LocalTopLeader<V, E> implements Transformer<Graph<V, E>, Partitioni
 			this.nodes = new HashSet<V>();
 		}
 
-		public Community(Set<V> nodes) {
-			this.nodes = nodes;
-		}
-
 		public boolean contains(V v) {
 			return nodes.contains(v);
 		}

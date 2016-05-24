@@ -8,17 +8,20 @@ import org.jgrapht.alg.BronKerboschCliqueFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import kyiv.rvysh.vkfriends.domain.PersonInfo;
 import kyiv.rvysh.vkfriends.domain.graph.Neo4jEdge;
 import kyiv.rvysh.vkfriends.domain.graph.Neo4jGraph;
 import kyiv.rvysh.vkfriends.graphalgorithms.ChineseWhispersClusterer;
 import kyiv.rvysh.vkfriends.graphalgorithms.CliquePercolationMethod;
 import kyiv.rvysh.vkfriends.graphalgorithms.GirvanNewmanClusterer;
+import kyiv.rvysh.vkfriends.graphalgorithms.evaluation.PlantedLPartition;
 import kyiv.rvysh.vkfriends.graphalgorithms.labelpropagation.LabelPropagationClusterer;
 import kyiv.rvysh.vkfriends.graphalgorithms.labelpropagation.rules.LPAmPropagationRule;
 import kyiv.rvysh.vkfriends.graphalgorithms.labelpropagation.rules.LPArPropagationRule;
 import kyiv.rvysh.vkfriends.graphalgorithms.markov.MarkovClusterer;
 import kyiv.rvysh.vkfriends.graphalgorithms.topleaders.TopLeaders;
 import kyiv.rvysh.vkfriends.jgrapht.JgraphtTransform;
+import kyiv.rvysh.vkfriends.utils.Pair;
 
 public class GraphService<V> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GraphService.class);
@@ -29,7 +32,12 @@ public class GraphService<V> {
 	private LabelPropagationClusterer<V> lpCommunityFinder;
 	private ChineseWhispersClusterer<V> cwCommunityFinder;
 	private MarkovClusterer<V> markovCommunityFinder;
+	private PlantedLPartition graphGenerator;
 
+	public Pair<Collection<Set<PersonInfo>>, Neo4jGraph<PersonInfo>> generateTestGraph() {
+		return graphGenerator.generateNeo4jGraph();
+	}
+	
 	public Collection<Set<V>> findCliques(Neo4jGraph<V> graph) {
 		Graph<V, Neo4jEdge> jGraph = JgraphtTransform.neo4jToJgraphtGraph(graph);
 		BronKerboschCliqueFinder<V, Neo4jEdge> kf = new BronKerboschCliqueFinder<>(jGraph);
@@ -100,5 +108,9 @@ public class GraphService<V> {
 
 	public void setMarkovCommunityFinder(MarkovClusterer<V> markovCommunityFinder) {
 		this.markovCommunityFinder = markovCommunityFinder;
+	}
+
+	public void setGraphGenerator(PlantedLPartition graphGenerator) {
+		this.graphGenerator = graphGenerator;
 	}
 }
