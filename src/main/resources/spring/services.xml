@@ -56,7 +56,9 @@
 		<property name="graphGenerator">
 			<bean class="kyiv.rvysh.vkfriends.graphalgorithms.evaluation.PlantedLPartition" />
 		</property>
-		
+	</bean>
+
+	<bean id="evaluationService" class="kyiv.rvysh.vkfriends.graphalgorithms.evaluation.EvaluationService">
 	</bean>
 
 </beans>

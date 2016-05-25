@@ -24,6 +24,9 @@ public class PlantedLPartition {
 
 	public Pair<Collection<Set<PersonInfo>>, Graph<PersonInfo, Neo4jEdge>> generateJungGraph() {
 		Random rand = new Random();
+//		pin = (rand.nextDouble() / 5 - 0.1 + 0.4);
+//		pout = (0.6 - pin) / 2;
+
 		Graph<PersonInfo, Neo4jEdge> result = new UndirectedSparseGraph<PersonInfo, Neo4jEdge>();
 		List<Set<PersonInfo>> communities = new ArrayList<>();
 		for (Integer i = 0; i < l; i++) {

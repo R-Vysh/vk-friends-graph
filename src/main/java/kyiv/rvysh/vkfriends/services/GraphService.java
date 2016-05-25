@@ -45,18 +45,18 @@ public class GraphService<V> {
 	}
 
 	public Collection<Set<V>> findCommunitiesCpm(Neo4jGraph<V> graph) {
-		LOGGER.info("Finding communities CPM");
+		LOGGER.info("Finding communities Clique Percolation");
 		return cpmCommunityFinder.clusterize(graph);
 	}
 
 	public Collection<Set<V>> findCommunitiesGn(Neo4jGraph<V> graph, int edgesToRemove) {
-		LOGGER.info("Finding communities GN");
+		LOGGER.info("Finding communities Girvan-Newman");
 		return gnCommunityFinder.clusterize(graph, edgesToRemove);
 	}
 
-	public Collection<Set<V>> findCommunitiesTopleaders(Neo4jGraph<V> graph, int clusters) {
+	public Collection<Set<V>> findCommunitiesTopleaders(Neo4jGraph<V> graph, int numOfClusters) {
 		LOGGER.info("Finding communities top leaders");
-		return topLeadersFinder.clusterize(graph, clusters);
+		return topLeadersFinder.clusterize(graph, numOfClusters);
 	}
 
 	public Collection<Set<V>> findCommunitiesLabelPropagation1(Neo4jGraph<V> graph) {
@@ -77,7 +77,7 @@ public class GraphService<V> {
 	}
 
 	public Collection<Set<V>> findCommunitiesChineseWhisperer(Neo4jGraph<V> graph) {
-		LOGGER.info("Finding communities CW");
+		LOGGER.info("Finding communities Chinese Whispers");
 		return cwCommunityFinder.clusterize(graph);
 	}
 

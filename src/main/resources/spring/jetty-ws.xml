@@ -20,4 +20,8 @@
 	<bean class="kyiv.rvysh.vkfriends.web.services.GraphWS">
 		<property name="service" ref="graphService" />
 	</bean>
+	
+	<bean class="kyiv.rvysh.vkfriends.web.services.EvaluationWS">
+		<property name="service" ref="evaluationService" />
+	</bean>
 </beans>
